@@ -1,0 +1,60 @@
+>myc epitope
+EQKLISEEDL
+
+>hemagglutinin epitope
+YPYDVPDYA
+
+>FLAG epitope
+DYKDDDDK
+
+>E epitope
+GAPVPYPDPLEPR
+
+>V5 epitope
+GKPIPNPLLGLDST
+
+>VSV epitope
+GKPIPNPLLGLDST
+
+>Xpress epitope
+DLYDDDDK
+
+>polyhistidine tag
+HHHHHH
+
+> polyglutamate tag
+EEEEEE
+
+>CaM binding peptide
+KRRWKKNFIAVSAANRFKKISSSGAL
+
+>S-tag
+KETAAAKFERQHMDS
+
+> Strep-tag
+AWRHPQFGG
+
+>Strep-II tag
+WSHPQFEK
+
+>BirA biotinylation site
+GLNDIFEAQKIEWHE
+
+>tetracysteine tag
+CCPGCC 
+
+>Enterokinase
+DDDK
+
+> Factor Xa cleavage site
+IedGR
+
+>Thrombin cleavage site
+LVPRGS
+
+>3C Protease cleavage site
+LEVLPQGP
+
+>TEV cleavage site
+ENLYFQS
+

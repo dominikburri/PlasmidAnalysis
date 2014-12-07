@@ -1,4 +1,7 @@
-This is a readme file
+PlasmidAnalysis
+===============
+
+Homework for Bioinformatics
 
 Dominik: Promotor , RBS, -10, -35
 
