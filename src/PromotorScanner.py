@@ -7,7 +7,7 @@ class ResultObject:
     An Object for storing the sequence and annotation of the feature
     """
     sequence = ""
-    annotation = []
+    annotation = ""
 
     def __init__(self, sequence, annotation):
         self.annotation = annotation
@@ -20,12 +20,16 @@ def generateList(feature_type):
             for feature in record.features:
                 if feature.type == feature_type:
                     sequence_of_feature = record.seq[feature.location.start: feature.location.end]
-                    annotation = feature.qualifiers['note']
-                    list_of_occurences.append(ResultObject(sequence_of_feature, annotation))
+                    try:
+                        annotation = feature.qualifiers['note'][0]
+                    except KeyError:
+                        annotation = "null"
+                    result = ResultObject(sequence_of_feature, annotation)
+                    list_of_occurences.append(result)
     return list_of_occurences
 
 records = SeqIO.parse("/Users/dominikburri/PycharmProjects/"
-                      "Bioinformatik/PlasmidAnalysis/files/vectors-100.gb", "genbank")
+                      "Bioinformatik/PlasmidAnalysis/files/vectors.gb", "genbank")
 
 #def clustering(list):
 
