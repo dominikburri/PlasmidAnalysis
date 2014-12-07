@@ -12,8 +12,10 @@ class ResultObject:
     def __init__(self, sequence, annotation):
         self.annotation = annotation
         self.sequence = sequence
+    def __str__(self):
+        return str(self.sequence) + "; " + self.annotation
 
-def generateList(feature_type):
+def generateList(feature_type, annotation_type):
     list_of_occurences = []
     for record in records:
         if len(record.seq) > 1500: # minimum for number of bases
@@ -21,7 +23,7 @@ def generateList(feature_type):
                 if feature.type == feature_type:
                     sequence_of_feature = record.seq[feature.location.start: feature.location.end]
                     try:
-                        annotation = feature.qualifiers['note'][0]
+                        annotation = feature.qualifiers[annotation_type][0]
                     except KeyError:
                         annotation = "null"
                     result = ResultObject(sequence_of_feature, annotation)
@@ -29,14 +31,14 @@ def generateList(feature_type):
     return list_of_occurences
 
 records = SeqIO.parse("/Users/dominikburri/PycharmProjects/"
-                      "Bioinformatik/PlasmidAnalysis/files/vectors.gb", "genbank")
+                      "Bioinformatik/PlasmidAnalysis/files/vectors-100.gb", "genbank")
 
 #def clustering(list):
 
 
 feature_type = 'promoter'
-list = generateList(feature_type)
+annotation_type = 'note'
+list = generateList(feature_type, annotation_type)
 print("occurences of " + feature_type + ": " + str(len(list)))
-for index in list:
-    print index.sequence
-    print index.annotation
+for resultObject in list:
+    print resultObject
