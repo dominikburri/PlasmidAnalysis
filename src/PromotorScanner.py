@@ -2,17 +2,27 @@ __author__ = 'dominikburri'
 
 from Bio import SeqIO
 
+class ResultObject:
+    """
+    An Object for storing the sequence and annotation of the feature
+    """
+    sequence = ""
+    annotation = []
+
+    def __init__(self, sequence, annotation):
+        self.annotation = annotation
+        self.sequence = sequence
+
 def generateList(feature_type):
     list_of_occurences = []
-    list_of_annotations = []
     for record in records:
         if len(record.seq) > 1500: # minimum for number of bases
             for feature in record.features:
                 if feature.type == feature_type:
                     sequence_of_feature = record.seq[feature.location.start: feature.location.end]
-                    list_of_occurences.append(sequence_of_feature)
-                    list_of_annotations.append(feature.qualifiers['note'])
-    return list_of_occurences, list_of_annotations
+                    annotation = feature.qualifiers['note']
+                    list_of_occurences.append(ResultObject(sequence_of_feature, annotation))
+    return list_of_occurences
 
 records = SeqIO.parse("/Users/dominikburri/PycharmProjects/"
                       "Bioinformatik/PlasmidAnalysis/files/vectors-100.gb", "genbank")
@@ -21,8 +31,8 @@ records = SeqIO.parse("/Users/dominikburri/PycharmProjects/"
 
 
 feature_type = 'promoter'
-lists = generateList(feature_type)
-print("occurences of " + feature_type + ": " + str(len(lists[0])))
-for index in range(len(lists[0])):
-    print lists[0][index]
-    print lists[1][index]
+list = generateList(feature_type)
+print("occurences of " + feature_type + ": " + str(len(list)))
+for index in list:
+    print index.sequence
+    print index.annotation
