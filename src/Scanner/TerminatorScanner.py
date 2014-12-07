@@ -28,7 +28,9 @@ def getFeatureInfo(records, featureType):
                     seqList.append(ResultObject(sequence, qualifier))
     return seqList
 
-records = SeqIO.parse("C:\Users\Kevin\IdeaProjects\PlasmidAnalysis\\files\\vectors-100.gb", "genbank")
+records = SeqIO.parse("/Users/dominikburri/"
+                      "PycharmProjects/Bioinformatik/PlasmidAnalysis/"
+                      "files/vectors-100.gb", "genbank")
 
 liste = getFeatureInfo(records, "terminator")
 
