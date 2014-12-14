@@ -31,6 +31,7 @@ records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\
 
 liste = getFeatureInfo(records, "terminator")
 
+
 for entry in liste:
     print entry
 
