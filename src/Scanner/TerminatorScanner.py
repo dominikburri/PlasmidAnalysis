@@ -27,11 +27,10 @@ def getFeatureInfo(records, featureType):
                     yield ResultObject(sequence, qualifier)
 
 
-records = SeqIO.parse("/Users/dominikburri/"
-                      "PycharmProjects/Bioinformatik/PlasmidAnalysis/"
-                      "files/vectors-100.gb", "genbank")
+records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\vectors-100.gb", "genbank")
 
 liste = getFeatureInfo(records, "terminator")
+
 
 for entry in liste:
     print entry
