@@ -8,13 +8,18 @@ class ResultObject:
     """
     An Object for storing the sequence, feature type and annotation of the feature
     """
-
     def __init__(self, sequence, feature_type, annotation):
+        self.occurences = 0
         self.annotation = annotation
         self.feature_type = feature_type
         self.sequence = sequence
     def __str__(self):
         return str(self.feature_type)+"; " + str(self.sequence)+ "; " + str(self.annotation)
+
+    def setOccurences(self):
+        self.occurences += 1
+    def getOccurences(self):
+        return self.occurences
 
 def generateList(feature_type):
     """
@@ -77,6 +82,7 @@ def compare_sequences_and_annotations(generated_object):
         for result in results:
             if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation)==str(result.annotation):
                 foundMatch = True
+                result.setOccurences()
             if len(results) == counter:
                 if foundMatch == False:
                     results.append(resultObject)
@@ -90,7 +96,7 @@ def compare_sequences_and_annotations(generated_object):
 # - - - - start of skript - - - -
 # - - - - - - - - - - - - - - - -
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
-records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\vectors.gb", "genbank")
+records = SeqIO.parse("../files/vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
@@ -101,11 +107,14 @@ list_generator = generateList(feature_type)
 #     occurences += 1
 # print("occurences of " + feature_type + ": " + str(occurences))
 
-# TODO: same sequences + annotations -> count occurences and prepare new list
+#  same sequences + annotations -> count occurences and prepare new list
 list_of_identical_objects = compare_sequences_and_annotations(list_generator)
+summe = 0
 for i in list_of_identical_objects:
-    print i
+    print i, i.getOccurences()
+    summe += i.getOccurences()
 print len(list_of_identical_objects)
+print summe
 
 # TODO: PSSM only, if the annotations are the same
 
