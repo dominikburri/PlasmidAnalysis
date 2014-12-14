@@ -14,7 +14,7 @@ class ResultObject:
         self.feature_type = feature_type
         self.sequence = sequence
     def __str__(self):
-        return str(self.sequence) + "; " + str(self.feature_type) + "; " + str(self.annotation)
+        return str(self.feature_type) + str(self.sequence) + "; " + "; " + str(self.annotation)
 
 def generateList(feature_type):
     """
@@ -65,22 +65,27 @@ def compare_sequences_and_annotations(generated_object):
     :param generated_object:
     :return:
     """
-    list_of_objects = []
-    #list_of_objects.append(generated_object.next())
+    results = []
 
-    list_generated_object = list(generated_object)
-    trigger = True
+    results.append(generated_object.next())
 
-    for object in list_generated_object:
-        for identical_object in list_of_objects:
-            if (str(object.sequence) != str(identical_object.sequence)) and (str(object.annotation) != str(identical_object.annotation)):
-                trigger = False
-        if trigger:
-            list_of_objects.append(object)
-            #list_generated_object.remove(identical_object)
-        trigger = True
+    #print results
 
-    return list_of_objects
+    for resultObject in generated_object:
+        counter = 1
+        #print "lel"
+        #print len(results)
+        foundMatch = False
+        for result in results:
+            if str(resultObject.sequence) == str(result.sequence):
+                foundMatch = True
+            if len(results) == counter:
+         #       print "wutr"
+                if foundMatch == False:
+                    results.append(resultObject)
+            counter += 1
+
+    return results
 
 
 
