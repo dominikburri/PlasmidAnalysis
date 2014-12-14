@@ -1,11 +1,12 @@
 __author__ = 'dominikburri'
 
 from Bio import SeqIO
-from bioservices import *
+#from bioservices import *
+
 
 class ResultObject:
     """
-    An Object for storing the sequence and annotation of the feature
+    An Object for storing the sequence, feature type and annotation of the feature
     """
 
     def __init__(self, sequence, feature_type, annotation):
@@ -30,9 +31,6 @@ def generateList(feature_type):
                     feature_type = feature.type
                     result = ResultObject(sequence_of_feature, feature_type, annotation)
                     yield result
-
-
-records = SeqIO.parse("../files/vectors-100.gb", "genbank")
 
 def clustering(list_of_sequences):
     """
@@ -61,20 +59,31 @@ def clustering(list_of_sequences):
     print "out:"
     print result
 
+# TODO: same sequences + annotations -> count occurences and prepare new list
+def compare_sequences_and_annotations(generated_object):
+    """
+    same sequences + annotations -> count occurences and prepare new list
+    :param generated_object:
+    :return:
+    """
+    #list_of_objects = list(generated_object)
+    #for object in list_of_objects:
+
+dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
+records = SeqIO.parse("../files/vectors-100.gb", "genbank")
+
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
 list_generator = generateList(feature_type)
 occurences = 0
-list_of_sequences = []
 for resultObject in list_generator:
     print resultObject
-    print resultObject.sequence.complement()
     occurences += 1
-    list_of_sequences.append(">test\n" + resultObject.sequence + "\n")
 print("occurences of " + feature_type + ": " + str(occurences))
 
-# TODO: same sequences + annotations -> count occurences and prepare new list
 
+# TODO: PSSM only, if the annotations are the same
 
+# TODO:
 
 #clustering(list_of_sequences)
