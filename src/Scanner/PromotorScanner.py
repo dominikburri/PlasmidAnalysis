@@ -59,29 +59,51 @@ def clustering(list_of_sequences):
     print "out:"
     print result
 
-# TODO: same sequences + annotations -> count occurences and prepare new list
 def compare_sequences_and_annotations(generated_object):
     """
     same sequences + annotations -> count occurences and prepare new list
     :param generated_object:
     :return:
     """
-    #list_of_objects = list(generated_object)
+    list_of_objects = []
+    #list_of_objects.append(generated_object.next())
 
-    #for object in list_of_objects:
+    list_generated_object = list(generated_object)
+    trigger = True
 
+    for object in list_generated_object:
+        for identical_object in list_of_objects:
+            if (str(object.sequence) != str(identical_object.sequence)) and (str(object.annotation) != str(identical_object.annotation)):
+                trigger = False
+        if trigger:
+            list_of_objects.append(object)
+            #list_generated_object.remove(identical_object)
+        trigger = True
+
+    return list_of_objects
+
+
+
+
+# - - - - start of skript - - - -
+# - - - - - - - - - - - - - - - -
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
 records = SeqIO.parse("../files/vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
 list_generator = generateList(feature_type)
-occurences = 0
-for resultObject in list_generator:
-    print resultObject
-    occurences += 1
-print("occurences of " + feature_type + ": " + str(occurences))
+# occurences = 0
+# for resultObject in list_generator:
+#     print resultObject
+#     occurences += 1
+# print("occurences of " + feature_type + ": " + str(occurences))
 
+# TODO: same sequences + annotations -> count occurences and prepare new list
+list_of_identical_objects = compare_sequences_and_annotations(list_generator)
+for i in list_of_identical_objects:
+    print i
+print len(list_of_identical_objects)
 
 # TODO: PSSM only, if the annotations are the same
 
