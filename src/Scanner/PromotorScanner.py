@@ -59,49 +59,56 @@ def clustering(list_of_sequences):
     print "out:"
     print result
 
-# TODO: same sequences + annotations -> count occurences and prepare new list
 def compare_sequences_and_annotations(generated_object):
     """
     same sequences + annotations -> count occurences and prepare new list
     :param generated_object:
     :return:
     """
-    #list_of_objects = list(generated_object)
+    results = []
 
-    #for object in list_of_objects:
+    results.append(generated_object.next())
 
+    #print results
+
+    for resultObject in generated_object:
+        counter = 1
+        #print "lel"
+        #print len(results)
+        foundMatch = False
+        for result in results:
+            if str(resultObject.sequence) == str(result.sequence):
+                foundMatch = True
+            if len(results) == counter:
+         #       print "wutr"
+                if foundMatch == False:
+                    results.append(resultObject)
+            counter += 1
+
+    return results
+
+
+
+
+# - - - - start of skript - - - -
+# - - - - - - - - - - - - - - - -
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
-records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\vectors-100.gb", "genbank")
+records = SeqIO.parse("../files/vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
-feature_type = 'terminator'
+feature_type = 'promoter'
 list_generator = generateList(feature_type)
-occurences = 0
+# occurences = 0
+# for resultObject in list_generator:
+#     print resultObject
+#     occurences += 1
+# print("occurences of " + feature_type + ": " + str(occurences))
 
-results = []
-
-results.append(list_generator.next())
-
-print results
-
-for resultObject in list_generator:
-    counter = 1
-    print "lel"
-    print len(results)
-    foundMatch = False
-    for result in results:
-        if str(resultObject.sequence) == str(result.sequence):
-            foundMatch = True
-        if len(results) == counter:
-            print "wutr"
-            if foundMatch == False:
-                results.append(resultObject)
-        counter += 1
-
-for ding in results:
-    print ding
-
-
+# TODO: same sequences + annotations -> count occurences and prepare new list
+list_of_identical_objects = compare_sequences_and_annotations(list_generator)
+for i in list_of_identical_objects:
+    print i
+print len(list_of_identical_objects)
 
 # TODO: PSSM only, if the annotations are the same
 
