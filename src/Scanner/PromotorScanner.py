@@ -1,11 +1,12 @@
 __author__ = 'dominikburri'
 
 from Bio import SeqIO
-from bioservices import *
+#from bioservices import *
+
 
 class ResultObject:
     """
-    An Object for storing the sequence and annotation of the feature
+    An Object for storing the sequence, feature type and annotation of the feature
     """
 
     def __init__(self, sequence, feature_type, annotation):
@@ -30,9 +31,6 @@ def generateList(feature_type):
                     feature_type = feature.type
                     result = ResultObject(sequence_of_feature, feature_type, annotation)
                     yield result
-
-
-records = SeqIO.parse("../files/vectors-100.gb", "genbank")
 
 def clustering(list_of_sequences):
     """
@@ -61,20 +59,54 @@ def clustering(list_of_sequences):
     print "out:"
     print result
 
+def compare_sequences_and_annotations(generated_object):
+    """
+    same sequences + annotations -> count occurences and prepare new list
+    :param generated_object:
+    :return:
+    """
+    list_of_objects = []
+    #list_of_objects.append(generated_object.next())
+
+    list_generated_object = list(generated_object)
+    trigger = True
+
+    for object in list_generated_object:
+        for identical_object in list_of_objects:
+            if (str(object.sequence) != str(identical_object.sequence)) and (str(object.annotation) != str(identical_object.annotation)):
+                trigger = False
+        if trigger:
+            list_of_objects.append(object)
+            #list_generated_object.remove(identical_object)
+        trigger = True
+
+    return list_of_objects
+
+
+
+
+# - - - - start of skript - - - -
+# - - - - - - - - - - - - - - - -
+dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
+records = SeqIO.parse("../files/vectors-100.gb", "genbank")
+
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
 list_generator = generateList(feature_type)
-occurences = 0
-list_of_sequences = []
-for resultObject in list_generator:
-    print resultObject
-    print resultObject.sequence.complement()
-    occurences += 1
-    list_of_sequences.append(">test\n" + resultObject.sequence + "\n")
-print("occurences of " + feature_type + ": " + str(occurences))
+# occurences = 0
+# for resultObject in list_generator:
+#     print resultObject
+#     occurences += 1
+# print("occurences of " + feature_type + ": " + str(occurences))
 
 # TODO: same sequences + annotations -> count occurences and prepare new list
+list_of_identical_objects = compare_sequences_and_annotations(list_generator)
+for i in list_of_identical_objects:
+    print i
+print len(list_of_identical_objects)
 
+# TODO: PSSM only, if the annotations are the same
 
+# TODO:
 
 #clustering(list_of_sequences)
