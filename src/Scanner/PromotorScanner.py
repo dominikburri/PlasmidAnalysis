@@ -73,14 +73,11 @@ def compare_sequences_and_annotations(generated_object):
 
     for resultObject in generated_object:
         counter = 1
-        #print "lel"
-        #print len(results)
         foundMatch = False
         for result in results:
             if str(resultObject.sequence) == str(result.sequence):
                 foundMatch = True
             if len(results) == counter:
-         #       print "wutr"
                 if foundMatch == False:
                     results.append(resultObject)
             counter += 1
