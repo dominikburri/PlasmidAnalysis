@@ -14,7 +14,7 @@ class ResultObject:
         self.feature_type = feature_type
         self.sequence = sequence
     def __str__(self):
-        return str(self.feature_type) + str(self.sequence) + "; " + "; " + str(self.annotation)
+        return str(self.feature_type)+"; " + str(self.sequence)+ "; " + str(self.annotation)
 
 def generateList(feature_type):
     """
@@ -75,7 +75,7 @@ def compare_sequences_and_annotations(generated_object):
         counter = 1
         foundMatch = False
         for result in results:
-            if str(resultObject.sequence) == str(result.sequence):
+            if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation)==str(result.annotation):
                 foundMatch = True
             if len(results) == counter:
                 if foundMatch == False:
@@ -90,7 +90,7 @@ def compare_sequences_and_annotations(generated_object):
 # - - - - start of skript - - - -
 # - - - - - - - - - - - - - - - -
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
-records = SeqIO.parse("../files/vectors-100.gb", "genbank")
+records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\vectors.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
