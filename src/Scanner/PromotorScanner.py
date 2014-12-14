@@ -67,6 +67,7 @@ def compare_sequences_and_annotations(generated_object):
     :return:
     """
     #list_of_objects = list(generated_object)
+
     #for object in list_of_objects:
 
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
