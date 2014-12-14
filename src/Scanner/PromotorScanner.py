@@ -14,7 +14,7 @@ class ResultObject:
         self.feature_type = feature_type
         self.sequence = sequence
     def __str__(self):
-        return str(self.sequence) + "; " + str(self.feature_type) + "; " + str(self.annotation)
+        return str(self.feature_type) + str(self.sequence) + "; " + "; " + str(self.annotation)
 
 def generateList(feature_type):
     """
@@ -71,16 +71,36 @@ def compare_sequences_and_annotations(generated_object):
     #for object in list_of_objects:
 
 dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
-records = SeqIO.parse("../files/vectors-100.gb", "genbank")
+records = SeqIO.parse("C:\Users\Bl4ck0ut88\IdeaProjects\PlasmidAnalysis\\files\\vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
-feature_type = 'promoter'
+feature_type = 'terminator'
 list_generator = generateList(feature_type)
 occurences = 0
+
+results = []
+
+results.append(list_generator.next())
+
+print results
+
 for resultObject in list_generator:
-    print resultObject
-    occurences += 1
-print("occurences of " + feature_type + ": " + str(occurences))
+    counter = 1
+    print "lel"
+    print len(results)
+    foundMatch = False
+    for result in results:
+        if str(resultObject.sequence) == str(result.sequence):
+            foundMatch = True
+        if len(results) == counter:
+            print "wutr"
+            if foundMatch == False:
+                results.append(resultObject)
+        counter += 1
+
+for ding in results:
+    print ding
+
 
 
 # TODO: PSSM only, if the annotations are the same
