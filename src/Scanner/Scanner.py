@@ -50,7 +50,7 @@ def clustering(objects_of_sequences):
     """
     list_of_sequences = ""
 
-    if len(objects_of_sequences)==0 or len(objects_of_sequences)==1:
+    if len(objects_of_sequences)>=1:
         return []
 
     for (i,k) in enumerate(objects_of_sequences):
@@ -176,7 +176,10 @@ kevins_list = ['terminator', 'CDS']
 alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
                     'enhancer', 'mobile_element', 'sig_peptide']
 
+complete_list = jeremyFeatures + dominiks_list + kevins_list + alessandros_list
+
 save_file_object = open("list_of_identical_objects.txt", "w")
+
 for feature in alessandros_list:
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
@@ -193,14 +196,8 @@ for feature in alessandros_list:
     #createPSSM(sequencelist)
     print summe
 save_file_object.close()
+
+# TODO: MUSCLE for same important annotation. Group the dictionary entries
 # TODO: parse near identical seq from 'pim' or 'phylotree'
-
-
-
-# TODO: PSSM only, if the annotations are the same. then send to muscle
-
-# TODO: Annotation statistics for every cluster via feature.qualifiers dictionary.
-
+# TODO: group the near identical seq and make another MUSCLE alignment
 # TODO: Blast of typical sequence against nucleotide database.
-
-#clustering(list_of_sequences)
