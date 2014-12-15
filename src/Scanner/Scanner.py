@@ -12,7 +12,7 @@ class ResultObject:
     An Object for storing the sequence, feature type and annotation of the feature
     """
     def __init__(self, sequence, feature_type, annotation):
-        self.occurences = 1
+        self.occurences = 0
         self.annotation = annotation
         self.feature_type = feature_type
         self.sequence = sequence
@@ -142,6 +142,7 @@ def reduce_to_single_sequences(generated_object, feature):
         counter = 1
         foundMatch = False
         for result in results:
+            # TODO: switch statement for feature type
             if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation)==str(result.annotation):
                 foundMatch = True
                 result.setOccurences()
@@ -163,26 +164,28 @@ kevins_list = ['terminator', 'CDS']
 alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
                     'enhancer', 'mobile_element', 'sig_peptide']
 
-for feature in dominiks_list:
-    filePath = "../../files/vectors-100.gb"
+save_file_object = open("list_of_identical_objects.txt", "w")
+for feature in alessandros_list:
+    filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
     list_generator = generateList(feature, filePath)
     #  same sequences + annotations -> count occurences and prepare new list
     list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
     summe = 0
-    for i in list_of_identical_objects:
-        summe += i.getOccurences()
-        print "Anzahl gleicher Sequenzen: ", i.getOccurences()
+    for object in list_of_identical_objects:
+        summe += object.getOccurences()
+        #Blast typical sequence
+        save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
     print len(list_of_identical_objects)
-    sequencelist = clustering(list_of_identical_objects)
-    createPSSM(sequencelist)
+    #sequencelist = clustering(list_of_identical_objects)
+    #createPSSM(sequencelist)
     print summe
-
+save_file_object.close()
 # TODO: parse near identical seq from 'pim' or 'phylotree'
 
 
 
-# TODO: PSSM only, if the annotations are the same
+# TODO: PSSM only, if the annotations are the same. then send to muscle
 
 # TODO: Annotation statistics for every cluster via feature.qualifiers dictionary.
 
