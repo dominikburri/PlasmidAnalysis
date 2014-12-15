@@ -83,25 +83,25 @@ def clustering(objects_of_sequences):
 def createPSSM(sequencelist):
     print "Start PSSM"
 
-    #sequencelist = sequencelist.replace("-", "N")
+    #sequencelist = sequencelist.replace("-", ".")
     f = open('fastatmp', 'w')
     f.write(sequencelist)
     f.close()
-
-
 
     list = []
 
     for seq_record in SeqIO.parse("fastatmp", "fasta", IUPAC.unambiguous_dna):
         list.append(str(seq_record.seq))
 
-    print "test"
+
     print list
-    m = motifs.create(list)
+    #motifs.create(test, alphabet=Gapped(IUPAC.unambiguous_dna))
+    m = motifs.create(list, alphabet=Gapped(IUPAC.unambiguous_dna))
     print "motif created"
 
+
     pwm = m.counts.normalize(pseudocounts=0.25)
-    print "pwm done"
+    print "PWM done"
     pssm = pwm.log_odds()
     print "PSSM done"
     return pssm
