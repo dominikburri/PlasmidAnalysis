@@ -38,8 +38,9 @@ def generateList(feature_type, filePath):
                 if feature.type == feature_type:
                     sequence_of_feature = record.seq[feature.location.start: feature.location.end]
                     annotation = feature.qualifiers
+                    importantAnnotation = dict((k,annotation[k]) for k in ('note','gene','bound_moiety','mobile_element_type','product')if k in annotation)
                     feature_type = feature.type
-                    result = ResultObject(sequence_of_feature, feature_type, annotation)
+                    result = ResultObject(sequence_of_feature, feature_type, importantAnnotation)
                     yield result
 
 def clustering(objects_of_sequences):
