@@ -130,6 +130,14 @@ def reduce_to_single_sequences(generated_object, feature):
     :param generated_object:
     :return:
     """
+
+    featureTypes = {
+                    "oriT": ['gene', 'product'], "polyA_signal": ['note'], "rep_origin": ['note'], "primer_bind": ['note'], "rRNA": ['poduct'], "mRNA": ['gene'], "tRNA": ['product'],
+                    "promotor": ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'], "-35_signal": ['note', 'gene'], "terminator": ['note'], "CDS": ['gene', 'product'],
+                    'protein_bind': ['note', 'bound_moiety'], 'misc_binding': ['note', 'bound_moiety'], 'misc_recomb': ['note'], 'LTR': ['note'], 'misc_signal': ['note'], 'enhancer': ['note'],
+                    'mobile_element': ['mobile_element_type', 'note'], 'sig_peptide': ['note']
+                    }
+
     results = []
     try:
         results.append(generated_object.next())
@@ -143,9 +151,13 @@ def reduce_to_single_sequences(generated_object, feature):
         foundMatch = False
         for result in results:
             # TODO: switch statement for feature type
-            if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation)==str(result.annotation):
-                foundMatch = True
+            matchCounter = 0
+            for key in featureTypes.get(feature):
+                if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation.get(key))==str(result.annotation.get(key)):
+                    matchCounter += 1
+            if foundMatch == len(featureTypes.get(feature)):
                 result.setOccurences()
+                foundMatch = True
             if len(results) == counter:
                 if foundMatch == False:
                     results.append(resultObject)
