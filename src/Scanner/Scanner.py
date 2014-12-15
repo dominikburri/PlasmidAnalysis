@@ -4,7 +4,6 @@ from Bio import SeqIO
 from bioservices import *
 from Bio import motifs
 from Bio.Alphabet import IUPAC, Gapped
-from Bio.Seq import Seq
 from Bio.Blast import NCBIWWW
 
 
@@ -13,7 +12,7 @@ class ResultObject:
     An Object for storing the sequence, feature type and annotation of the feature
     """
     def __init__(self, sequence, feature_type, annotation):
-        self.occurences = 0
+        self.occurences = 1
         self.annotation = annotation
         self.feature_type = feature_type
         self.sequence = sequence
@@ -25,12 +24,14 @@ class ResultObject:
     def getOccurences(self):
         return self.occurences
 
-def generateList(feature_type):
+def generateList(feature_type, filePath):
     """
     A generator
     :param feature_type:
     :return: a ResultObject with the desired sequence and annotation
     """
+    records = SeqIO.parse(filePath, "genbank")
+
     for record in records:
         if len(record.seq) > 1500: # minimum for number of bases
             for feature in record.features:
@@ -49,11 +50,15 @@ def clustering(objects_of_sequences):
     """
     list_of_sequences = ""
 
-    for k in objects_of_sequences:
+    if len(objects_of_sequences)==0 or len(objects_of_sequences)==1:
+        return []
+
+    for (i,k) in enumerate(objects_of_sequences):
         print k
-        list_of_sequences += ">" + "identifier" +"\n"+str(k.sequence)+"\n\n"
+        list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
         #list_of_sequences='>test_a\nAGAGAGAGAG\n\n>test_b\nAGAAAGAA\n\n>test_c\nAGAGGAGAG\n\n'
 
+    print list_of_sequences
     m = MUSCLE(verbose=False)
     jobid = m.run(frmt="fasta", sequence=list_of_sequences, email="dominik.burri1@students.fhnw.ch")
 
@@ -70,6 +75,8 @@ def clustering(objects_of_sequences):
     sequencelist = result
 
     print result
+    print "Resulttypes: ", m.getResultTypes(jobid)
+
     result=m.getResult(jobid, "phylotree")
     print "phylotree:"
     print result
@@ -85,6 +92,9 @@ def clustering(objects_of_sequences):
 def createPSSM(sequencelist):
     print "Start PSSM"
 
+    if len(sequencelist)==0:
+        return
+
     #sequencelist = sequencelist.replace("-", ".")
     f = open('fastatmp', 'w')
     f.write(sequencelist)
@@ -95,7 +105,7 @@ def createPSSM(sequencelist):
     for seq_record in SeqIO.parse("fastatmp", "fasta", IUPAC.unambiguous_dna):
         list.append(str(seq_record.seq))
 
-
+    #Blast typical sequence
     result_handle = NCBIWWW.qblast("blastn", "nt", list[0])
     save_file = open("my_blast.xml", "w")
     save_file.write(result_handle.read())
@@ -104,7 +114,6 @@ def createPSSM(sequencelist):
 
     #motifs.create(test, alphabet=Gapped(IUPAC.unambiguous_dna))
     m = motifs.create(list, alphabet=Gapped(IUPAC.unambiguous_dna))
-
     print "motif created"
 
 
@@ -112,22 +121,21 @@ def createPSSM(sequencelist):
     print "PWM done"
     pssm = pwm.log_odds()
     print "PSSM done"
-    print pssm
+    return pssm
 
-    return pssm, list
-
-
-
-def compare_sequences_and_annotations(generated_object):
+def reduce_to_single_sequences(generated_object, feature):
+    # TODO: implement in 'generateList'
     """
     same sequences + annotations -> count occurences and prepare new list
     :param generated_object:
     :return:
     """
     results = []
-
-    results.append(generated_object.next())
-
+    try:
+        results.append(generated_object.next())
+    except (StopIteration):
+        print "Warning: empty generator. ", feature, " not found"
+        return []
     #print results
 
     for resultObject in generated_object:
@@ -150,29 +158,27 @@ def compare_sequences_and_annotations(generated_object):
 # - - - - start of skript - - - -
 # - - - - - - - - - - - - - - - -
 jeremyFeatures = ['oriT', 'polyA_signal', 'rep_origin', 'primer_bind', 'rRNA', 'mRNA', 'tRNA']
-records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
+dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
+kevins_list = ['terminator', 'CDS']
+alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
+                    'enhancer', 'mobile_element', 'sig_peptide']
 
-# make a list generator with the desired feature and its annotation
-feature_type = 'rep_origin'
-list_generator = generateList(feature_type)
-# occurences = 0
-# for resultObject in list_generator:
-#     print resultObject
-#     occurences += 1
-# print("occurences of " + feature_type + ": " + str(occurences))
+for feature in dominiks_list:
+    filePath = "../../files/vectors-100.gb"
+    # make a list generator with the desired feature and its annotation
+    list_generator = generateList(feature, filePath)
+    #  same sequences + annotations -> count occurences and prepare new list
+    list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
+    summe = 0
+    for i in list_of_identical_objects:
+        summe += i.getOccurences()
+        print "Anzahl gleicher Sequenzen: ", i.getOccurences()
+    print len(list_of_identical_objects)
+    sequencelist = clustering(list_of_identical_objects)
+    createPSSM(sequencelist)
+    print summe
 
-#  same sequences + annotations -> count occurences and prepare new list
-list_of_identical_objects = compare_sequences_and_annotations(list_generator)
-summe = 0
-for i in list_of_identical_objects:
-    #print i, i.getOccurences()
-    #print i.sequence
-    summe += i.getOccurences()
-print len(list_of_identical_objects)
-sequencelist = clustering(list_of_identical_objects)
-pssm, list = createPSSM(sequencelist)
-
-print summe
+# TODO: parse near identical seq from 'pim' or 'phylotree'
 
 
 
