@@ -132,9 +132,12 @@ def reduce_to_single_sequences(generated_object, feature):
     """
 
     featureTypes = {
-                    "oriT": ['gene', 'product'], "polyA_signal": ['note'], "rep_origin": ['note'], "primer_bind": ['note'], "rRNA": ['poduct'], "mRNA": ['gene'], "tRNA": ['product'],
-                    "promotor": ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'], "-35_signal": ['note', 'gene'], "terminator": ['note'], "CDS": ['gene', 'product'],
-                    'protein_bind': ['note', 'bound_moiety'], 'misc_binding': ['note', 'bound_moiety'], 'misc_recomb': ['note'], 'LTR': ['note'], 'misc_signal': ['note'], 'enhancer': ['note'],
+                    "oriT": ['gene', 'product'], "polyA_signal": ['note'], "rep_origin": ['note'],
+                    "primer_bind": ['note'], "rRNA": ['poduct'], "mRNA": ['gene'], "tRNA": ['product'],
+                    "promotor": ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'],
+                    "-35_signal": ['note', 'gene'], "terminator": ['note'], "CDS": ['gene', 'product'],
+                    'protein_bind': ['note', 'bound_moiety'], 'misc_binding': ['note', 'bound_moiety'],
+                    'misc_recomb': ['note'], 'LTR': ['note'], 'misc_signal': ['note'], 'enhancer': ['note'],
                     'mobile_element': ['mobile_element_type', 'note'], 'sig_peptide': ['note']
                     }
 
