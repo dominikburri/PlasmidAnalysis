@@ -23,12 +23,14 @@ class ResultObject:
     def getOccurences(self):
         return self.occurences
 
-def generateList(feature_type):
+def generateList(feature_type, filePath):
     """
     A generator
     :param feature_type:
     :return: a ResultObject with the desired sequence and annotation
     """
+    records = SeqIO.parse(filePath, "genbank")
+
     for record in records:
         if len(record.seq) > 1500: # minimum for number of bases
             for feature in record.features:
@@ -50,11 +52,12 @@ def clustering(objects_of_sequences):
     if len(objects_of_sequences)==0 or len(objects_of_sequences)==1:
         return []
 
-    for k in objects_of_sequences:
+    for (i,k) in enumerate(objects_of_sequences):
         print k
-        list_of_sequences += ">" + "identifier" +"\n"+str(k.sequence)+"\n\n"
+        list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
         #list_of_sequences='>test_a\nAGAGAGAGAG\n\n>test_b\nAGAAAGAA\n\n>test_c\nAGAGGAGAG\n\n'
 
+    print list_of_sequences
     m = MUSCLE(verbose=False)
     jobid = m.run(frmt="fasta", sequence=list_of_sequences, email="dominik.burri1@students.fhnw.ch")
 
@@ -154,12 +157,9 @@ alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_
                     'enhancer', 'mobile_element', 'sig_peptide']
 
 for feature in dominiks_list:
-    records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
-
+    filePath = "../../files/vectors-100.gb"
     # make a list generator with the desired feature and its annotation
-    feature_type = feature
-    list_generator = generateList(feature_type) # TODO: Generator wird nicht neu initialisiert
-
+    list_generator = generateList(feature, filePath)
     #  same sequences + annotations -> count occurences and prepare new list
     list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
     summe = 0
@@ -171,6 +171,6 @@ for feature in dominiks_list:
     createPSSM(sequencelist)
     print summe
 
-
+# TODO: parse near identical seq from 'pim' or 'phylotree'
 
 # TODO: PSSM only, if the annotations are the same
