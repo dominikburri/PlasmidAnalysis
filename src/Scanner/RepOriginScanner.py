@@ -47,6 +47,7 @@ def generateList(feature_type, type_count):
                     result = ResultObject(sequence_of_feature, feature_type, annotation)
                     yield result
     #print type_count
+    return
 
 
 
@@ -83,22 +84,6 @@ records = SeqIO.parse("../../files/vectors.gb", "genbank")
 feature_type = 'rep_origin'
 jeremyFeatures = ['oriT', 'polyA_signal', 'rep_origin', 'primer_bind', 'rRNA', 'mRNA', 'tRNA']
 type_count = dict((e, 0) for e in jeremyFeatures)
-
-
-#for element in jeremyFeatures:
-
-
-#
-# vectors = SeqIO.parse('../../files/vectors-100.gb', 'genbank')
-#
-# locationList = []
-# list_key = []
-#
-#
-#
-# for seq_record in vectors:
-#     for feature in seq_record.features:
-
 
 
 for i in jeremyFeatures:

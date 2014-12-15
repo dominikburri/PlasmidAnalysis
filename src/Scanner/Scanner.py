@@ -106,7 +106,7 @@ def createPSSM(sequencelist):
     print "PSSM done"
     return pssm
 
-def compare_sequences_and_annotations(generated_object):
+def reduce_to_single_sequences(generated_object):
     """
     same sequences + annotations -> count occurences and prepare new list
     :param generated_object:
@@ -138,23 +138,21 @@ def compare_sequences_and_annotations(generated_object):
 # - - - - start of skript - - - -
 # - - - - - - - - - - - - - - - -
 jeremyFeatures = ['oriT', 'polyA_signal', 'rep_origin', 'primer_bind', 'rRNA', 'mRNA', 'tRNA']
+dominiks_list = ['promoter', 'RBS', '-10_signal', '-35_signal']
+kevins_list = ['terminator', 'CDS']
+alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
+                    'enhancer', 'mobile_element', 'sig_peptide']
+
 records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
 feature_type = 'promoter'
-list_generator = generateList(feature_type)
-# occurences = 0
-# for resultObject in list_generator:
-#     print resultObject
-#     occurences += 1
-# print("occurences of " + feature_type + ": " + str(occurences))
+list_generator = generateList(feature_type) # TODO: Generator wird nicht neu initialisiert
 
 #  same sequences + annotations -> count occurences and prepare new list
-list_of_identical_objects = compare_sequences_and_annotations(list_generator)
+list_of_identical_objects = reduce_to_single_sequences(list_generator)
 summe = 0
 for i in list_of_identical_objects:
-    #print i, i.getOccurences()
-    #print i.sequence
     summe += i.getOccurences()
 print len(list_of_identical_objects)
 sequencelist = clustering(list_of_identical_objects)
@@ -164,7 +162,3 @@ print summe
 
 
 # TODO: PSSM only, if the annotations are the same
-
-# TODO:
-
-#clustering(list_of_sequences)
