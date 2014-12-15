@@ -4,6 +4,8 @@ from Bio import SeqIO
 from bioservices import *
 from Bio import motifs
 from Bio.Alphabet import IUPAC, Gapped
+from Bio.Seq import Seq
+from Bio.Blast import NCBIWWW
 
 
 class ResultObject:
@@ -94,9 +96,15 @@ def createPSSM(sequencelist):
         list.append(str(seq_record.seq))
 
 
-    print list
+    result_handle = NCBIWWW.qblast("blastn", "nt", list[0])
+    save_file = open("my_blast.xml", "w")
+    save_file.write(result_handle.read())
+    save_file.close()
+    result_handle.close()
+
     #motifs.create(test, alphabet=Gapped(IUPAC.unambiguous_dna))
     m = motifs.create(list, alphabet=Gapped(IUPAC.unambiguous_dna))
+
     print "motif created"
 
 
@@ -104,7 +112,11 @@ def createPSSM(sequencelist):
     print "PWM done"
     pssm = pwm.log_odds()
     print "PSSM done"
-    return pssm
+    print pssm
+
+    return pssm, list
+
+
 
 def compare_sequences_and_annotations(generated_object):
     """
@@ -141,7 +153,7 @@ jeremyFeatures = ['oriT', 'polyA_signal', 'rep_origin', 'primer_bind', 'rRNA', '
 records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
 
 # make a list generator with the desired feature and its annotation
-feature_type = 'promoter'
+feature_type = 'rep_origin'
 list_generator = generateList(feature_type)
 # occurences = 0
 # for resultObject in list_generator:
@@ -158,13 +170,16 @@ for i in list_of_identical_objects:
     summe += i.getOccurences()
 print len(list_of_identical_objects)
 sequencelist = clustering(list_of_identical_objects)
-createPSSM(sequencelist)
+pssm, list = createPSSM(sequencelist)
+
 print summe
 
 
 
 # TODO: PSSM only, if the annotations are the same
 
-# TODO:
+# TODO: Annotation statistics for every cluster via feature.qualifiers dictionary.
+
+# TODO: Blast of typical sequence against nucleotide database.
 
 #clustering(list_of_sequences)
