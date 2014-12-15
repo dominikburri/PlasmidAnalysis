@@ -86,8 +86,8 @@ jeremyFeatures = ['oriT', 'polyA_signal', 'rep_origin', 'primer_bind', 'rRNA', '
 type_count = dict((e, 0) for e in jeremyFeatures)
 
 
-for i in jeremyFeatures:
-    list_generator = generateList(i, type_count)
+for features in jeremyFeatures:
+    list_generator = generateList(features, type_count)
     occurences = 0
     list_of_sequences = []
     for resultObject in list_generator:
@@ -95,6 +95,6 @@ for i in jeremyFeatures:
         print resultObject.sequence.complement()
         occurences += 1
         list_of_sequences.append(">test\n" + resultObject.sequence + "\n")
-    print("occurences of " + i + ": " + str(occurences))
+    print("occurences of " + features + ": " + str(occurences))
 
 # TODO: same sequences + annotations -> count occurences and prepare new list

@@ -11,7 +11,7 @@ class ResultObject:
     An Object for storing the sequence, feature type and annotation of the feature
     """
     def __init__(self, sequence, feature_type, annotation):
-        self.occurences = 0
+        self.occurences = 1
         self.annotation = annotation
         self.feature_type = feature_type
         self.sequence = sequence
@@ -47,6 +47,9 @@ def clustering(objects_of_sequences):
     """
     list_of_sequences = ""
 
+    if len(objects_of_sequences)==0 or len(objects_of_sequences)==1:
+        return []
+
     for k in objects_of_sequences:
         print k
         list_of_sequences += ">" + "identifier" +"\n"+str(k.sequence)+"\n\n"
@@ -66,8 +69,9 @@ def clustering(objects_of_sequences):
     result=m.getResult(jobid, "aln-fasta")
     print "aln-fasta:"
     sequencelist = result
-
     print result
+    print "Resulttypes: ", m.getResultTypes(jobid)
+
     result=m.getResult(jobid, "phylotree")
     print "phylotree:"
     print result
@@ -82,6 +86,9 @@ def clustering(objects_of_sequences):
 
 def createPSSM(sequencelist):
     print "Start PSSM"
+
+    if len(sequencelist)==0:
+        return
 
     #sequencelist = sequencelist.replace("-", ".")
     f = open('fastatmp', 'w')
@@ -106,16 +113,19 @@ def createPSSM(sequencelist):
     print "PSSM done"
     return pssm
 
-def reduce_to_single_sequences(generated_object):
+def reduce_to_single_sequences(generated_object, feature):
+    # TODO: implement in 'generateList'
     """
     same sequences + annotations -> count occurences and prepare new list
     :param generated_object:
     :return:
     """
     results = []
-
-    results.append(generated_object.next())
-
+    try:
+        results.append(generated_object.next())
+    except (StopIteration):
+        print "Warning: empty generator. ", feature, " not found"
+        return []
     #print results
 
     for resultObject in generated_object:
@@ -143,21 +153,23 @@ kevins_list = ['terminator', 'CDS']
 alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
                     'enhancer', 'mobile_element', 'sig_peptide']
 
-records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
+for feature in dominiks_list:
+    records = SeqIO.parse("../../files/vectors-100.gb", "genbank")
 
-# make a list generator with the desired feature and its annotation
-feature_type = 'promoter'
-list_generator = generateList(feature_type) # TODO: Generator wird nicht neu initialisiert
+    # make a list generator with the desired feature and its annotation
+    feature_type = feature
+    list_generator = generateList(feature_type) # TODO: Generator wird nicht neu initialisiert
 
-#  same sequences + annotations -> count occurences and prepare new list
-list_of_identical_objects = reduce_to_single_sequences(list_generator)
-summe = 0
-for i in list_of_identical_objects:
-    summe += i.getOccurences()
-print len(list_of_identical_objects)
-sequencelist = clustering(list_of_identical_objects)
-createPSSM(sequencelist)
-print summe
+    #  same sequences + annotations -> count occurences and prepare new list
+    list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
+    summe = 0
+    for i in list_of_identical_objects:
+        summe += i.getOccurences()
+        print "Anzahl gleicher Sequenzen: ", i.getOccurences()
+    print len(list_of_identical_objects)
+    sequencelist = clustering(list_of_identical_objects)
+    createPSSM(sequencelist)
+    print summe
 
 
 
