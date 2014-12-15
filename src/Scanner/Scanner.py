@@ -51,7 +51,7 @@ def clustering(objects_of_sequences):
     """
     list_of_sequences = ""
 
-    if len(objects_of_sequences)==0 or len(objects_of_sequences)==1:
+    if len(objects_of_sequences)>=1:
         return []
 
     for (i,k) in enumerate(objects_of_sequences):
@@ -131,6 +131,17 @@ def reduce_to_single_sequences(generated_object, feature):
     :param generated_object:
     :return:
     """
+
+    featureTypes = {
+                    "oriT": ['gene', 'product'], "polyA_signal": ['note'], "rep_origin": ['note'],
+                    "primer_bind": ['note'], "rRNA": ['poduct'], "mRNA": ['gene'], "tRNA": ['product'],
+                    "promotor": ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'],
+                    "-35_signal": ['note', 'gene'], "terminator": ['note'], "CDS": ['gene', 'product'],
+                    'protein_bind': ['note', 'bound_moiety'], 'misc_binding': ['note', 'bound_moiety'],
+                    'misc_recomb': ['note'], 'LTR': ['note'], 'misc_signal': ['note'], 'enhancer': ['note'],
+                    'mobile_element': ['mobile_element_type', 'note'], 'sig_peptide': ['note']
+                    }
+
     results = []
     try:
         results.append(generated_object.next())
@@ -144,9 +155,13 @@ def reduce_to_single_sequences(generated_object, feature):
         foundMatch = False
         for result in results:
             # TODO: switch statement for feature type
-            if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation)==str(result.annotation):
-                foundMatch = True
+            matchCounter = 0
+            for key in featureTypes.get(feature):
+                if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation.get(key))==str(result.annotation.get(key)):
+                    matchCounter += 1
+            if foundMatch == len(featureTypes.get(feature)):
                 result.setOccurences()
+                foundMatch = True
             if len(results) == counter:
                 if foundMatch == False:
                     results.append(resultObject)
@@ -165,7 +180,10 @@ kevins_list = ['terminator', 'CDS']
 alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
                     'enhancer', 'mobile_element', 'sig_peptide']
 
+complete_list = jeremyFeatures + dominiks_list + kevins_list + alessandros_list
+
 save_file_object = open("list_of_identical_objects.txt", "w")
+
 for feature in alessandros_list:
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
@@ -182,14 +200,8 @@ for feature in alessandros_list:
     #createPSSM(sequencelist)
     print summe
 save_file_object.close()
+
+# TODO: MUSCLE for same important annotation. Group the dictionary entries
 # TODO: parse near identical seq from 'pim' or 'phylotree'
-
-
-
-# TODO: PSSM only, if the annotations are the same. then send to muscle
-
-# TODO: Annotation statistics for every cluster via feature.qualifiers dictionary.
-
+# TODO: group the near identical seq and make another MUSCLE alignment
 # TODO: Blast of typical sequence against nucleotide database.
-
-#clustering(list_of_sequences)
