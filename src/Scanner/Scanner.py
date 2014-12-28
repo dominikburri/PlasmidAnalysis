@@ -133,10 +133,10 @@ def reduce_to_single_sequences(generated_object, feature):
     """
 
     featureTypes = {
-                    "oriT": ['gene', 'product'], "polyA_signal": ['note'], "rep_origin": ['note'],
-                    "primer_bind": ['note'], "rRNA": ['poduct'], "mRNA": ['gene'], "tRNA": ['product'],
-                    "promotor": ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'],
-                    "-35_signal": ['note', 'gene'], "terminator": ['note'], "CDS": ['gene', 'product'],
+                    'oriT': ['gene', 'product'], 'polyA_signal': ['note'], 'rep_origin': ['note'],
+                    'primer_bind': ['note'], 'rRNA': ['poduct'], 'mRNA': ['gene'], 'tRNA': ['product'],
+                    'promoter': ['note'], "RBS": ['note', 'gene'], "-10_signal": ['note', 'gene'],
+                    '-35_signal': ['note', 'gene'], 'terminator': ['note'], 'CDS': ['gene', 'product'],
                     'protein_bind': ['note', 'bound_moiety'], 'misc_binding': ['note', 'bound_moiety'],
                     'misc_recomb': ['note'], 'LTR': ['note'], 'misc_signal': ['note'], 'enhancer': ['note'],
                     'mobile_element': ['mobile_element_type', 'note'], 'sig_peptide': ['note']
@@ -146,7 +146,7 @@ def reduce_to_single_sequences(generated_object, feature):
     try:
         results.append(generated_object.next())
     except (StopIteration):
-        print "Warning: empty generator. ", feature, " not found"
+        print "Warning: empty generator. ", feature, " not found!"
         return []
     #print results
 
@@ -156,10 +156,11 @@ def reduce_to_single_sequences(generated_object, feature):
         for result in results:
             # TODO: switch statement for feature type
             matchCounter = 0
-            for key in featureTypes.get(feature):
-                if str(resultObject.sequence) == str(result.sequence) and str(resultObject.annotation.get(key))==str(result.annotation.get(key)):
+            for key in featureTypes[feature]:
+                if str(resultObject.sequence) == str(result.sequence) and resultObject.annotation.get(key)==result.annotation.get(key):
+                    #print str(resultObject.annotation.get(key))
                     matchCounter += 1
-            if foundMatch == len(featureTypes.get(feature)):
+            if matchCounter == len(featureTypes[feature]):
                 result.setOccurences()
                 foundMatch = True
             if len(results) == counter:
@@ -180,14 +181,23 @@ kevins_list = ['terminator', 'CDS']
 alessandros_list = ['protein_bind', 'misc_binding', 'misc_recomb', 'LTR', 'misc_signal',
                     'enhancer', 'mobile_element', 'sig_peptide']
 
+
 complete_list = jeremyFeatures + dominiks_list + kevins_list + alessandros_list
 
 save_file_object = open("list_of_identical_objects.txt", "w")
 
-for feature in alessandros_list:
+for feature in kevins_list:
+    print feature
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
     list_generator = generateList(feature, filePath)
+
+    # for eintrag in list_generator:
+    #     for key in featureTypes[feature]:
+    #
+    #         print eintrag.annotation.get(key)
+
+
     #  same sequences + annotations -> count occurences and prepare new list
     list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
     summe = 0
