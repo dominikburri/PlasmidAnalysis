@@ -1,5 +1,3 @@
-
-
 from Bio import SeqIO
 from bioservices import *
 from Bio import motifs
@@ -58,7 +56,6 @@ def clustering(objects_of_sequences):
     for (i,k) in enumerate(objects_of_sequences):
         print k
         list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
-        #list_of_sequences='>test_a\nAGAGAGAGAG\n\n>test_b\nAGAAAGAA\n\n>test_c\nAGAGGAGAG\n\n'
 
     print list_of_sequences
     m = MUSCLE(verbose=False)
@@ -187,7 +184,7 @@ complete_list = jeremyFeatures + dominiks_list + kevins_list + alessandros_list
 
 save_file_object = open("list_of_identical_objects.txt", "w")
 
-for feature in kevins_list:
+for feature in dominiks_list:
     print feature
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
@@ -207,12 +204,11 @@ for feature in kevins_list:
         #Blast typical sequence
         save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
     print len(list_of_identical_objects)
-    # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE übergeben
-    #sequencelist = clustering(list_of_identical_objects) # MUSCLE
-    # TODO: PIM Auswertung: Sequenzen grösser Schwellenwert (bsp. 95%) rausspeichern. Rückgabe: Liste von "fast identische Sequenzen"
+    # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
+    sequencelist = clustering(list_of_identical_objects)
+    # TODO: PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
     # TODO: neues MUSCLE
     # TODO: PSSM
     #createPSSM(sequencelist)
     print summe
 save_file_object.close()
-
