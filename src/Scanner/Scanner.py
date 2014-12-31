@@ -45,8 +45,9 @@ def generateList(feature_type, filePath):
 
 def clustering(objects_of_sequences):
     """
+    MUSCLE
     Compare the sequences to similarity. same sequences with similar annotations shall be clustered
-    :param list_of_sequences:
+    :param objects_of_sequences:
     :return:
     """
     list_of_sequences = ""
@@ -206,12 +207,12 @@ for feature in kevins_list:
         #Blast typical sequence
         save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
     print len(list_of_identical_objects)
-    #sequencelist = clustering(list_of_identical_objects)
+    # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE übergeben
+    #sequencelist = clustering(list_of_identical_objects) # MUSCLE
+    # TODO: PIM Auswertung: Sequenzen grösser Schwellenwert (bsp. 95%) rausspeichern. Rückgabe: Liste von "fast identische Sequenzen"
+    # TODO: neues MUSCLE
+    # TODO: PSSM
     #createPSSM(sequencelist)
     print summe
 save_file_object.close()
 
-# TODO: MUSCLE for same important annotation. Group the dictionary entries
-# TODO: parse near identical seq from 'pim' or 'phylotree'
-# TODO: group the near identical seq and make another MUSCLE alignment
-# TODO: Blast of typical sequence against nucleotide database.
