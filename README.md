@@ -3,7 +3,7 @@ PlasmidAnalysis
 
 Homework for Bioinformatics
 
-Dominik: Promotor , RBS, -10, -35
+Dominik: Promoter , RBS, -10, -35
 
 Kevin: Terminator, CDS
 
@@ -13,7 +13,8 @@ Alessandro: protein_bind, misc_binding, misc_recomb, LTR, misc_signal
 enhancer, mobile_element, sig_peptide
 
 Aufgabenverteilung:
-    Kevin   'wichtige annotation' in neue Liste speichern
+    Kevin   'wichtige annotation' in neue Liste speichern [done]
     Russo   selektives speichern der Annotation (nur note und gene)
+            'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE übergeben
     Jeremy  Darstellung der Resultate
     Dominik PIM Auswertung: Rückgabe: Liste von "fast identische Sequenzen"
