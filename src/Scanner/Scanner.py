@@ -124,6 +124,12 @@ def createPSSM(sequencelist):
     print "PSSM done"
     return pssm
 
+def one_two_muscle():
+    terminator ={
+        'T0': 'note', 'T1': 'note', 'T2': 'note', 'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
+    }
+
+
 def reduce_to_single_sequences(generated_object, feature):
     # TODO: implement in 'generateList'
     """
@@ -158,7 +164,6 @@ def reduce_to_single_sequences(generated_object, feature):
             matchCounter = 0
             for key in featureTypes[feature]:
                 if str(resultObject.sequence) == str(result.sequence) and resultObject.annotation.get(key)==result.annotation.get(key):
-                    #print str(resultObject.annotation.get(key))
                     matchCounter += 1
             if matchCounter == len(featureTypes[feature]):
                 result.setOccurences()

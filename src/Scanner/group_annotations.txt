@@ -1,0 +1,2 @@
+Terminator: (Note: T0, T1, T2, T7, rrnB, tNOS)
+CDS: (Gene: cat), (Gene: pac), Gene: amp)
