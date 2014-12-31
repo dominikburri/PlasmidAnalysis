@@ -124,7 +124,13 @@ def createPSSM(sequencelist):
 
 def one_two_muscle():
     terminator ={
-        'T0': 'note', 'T1': 'note', 'T2': 'note', 'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
+        'T0': 'note', 'T1': 'note', 'T2': 'note',
+        'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
+    }
+    CDS = {
+        'hypothetical protein': 'product', 'bla': 'gene', 'ampR': 'gene',
+        'kanamycin resistance protein': 'product', 'Amp': 'product', 'tetR': 'product',
+        'cat': 'gene', 'green fluorescent protein': 'product', 'neo': 'gene'
     }
 
 
