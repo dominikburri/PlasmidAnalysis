@@ -48,16 +48,17 @@ def clustering(objects_of_sequences):
     :param objects_of_sequences:
     :return:
     """
+    print 'MUSCLE'
     list_of_sequences = ""
 
-    if len(objects_of_sequences)>=1:
+    if len(objects_of_sequences)<=1:
         return []
 
     for (i,k) in enumerate(objects_of_sequences):
-        print k
+        #print k
         list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
 
-    print list_of_sequences
+    #print list_of_sequences
     m = MUSCLE(verbose=False)
     jobid = m.run(frmt="fasta", sequence=list_of_sequences, email="dominik.burri1@students.fhnw.ch")
 
@@ -65,28 +66,126 @@ def clustering(objects_of_sequences):
         print "Status: ", m.getStatus(jobid)
 
     result=m.getResult(jobid, "sequence")
-    print "sequence:"
-    print result
-
+    #print "sequence:"
+    #print result
+    sequencelist = result
+    f = open('sequence_result.fasta', 'w')
+    f.write(sequencelist)
+    f.close()
 
     result=m.getResult(jobid, "aln-fasta")
-    print "aln-fasta:"
-    sequencelist = result
+    #print "aln-fasta:"
 
-    print result
-    print "Resulttypes: ", m.getResultTypes(jobid)
+    #print result
+    #print "Resulttypes: ", m.getResultTypes(jobid)
 
     result=m.getResult(jobid, "phylotree")
-    print "phylotree:"
-    print result
+    #print "phylotree:"
+    #print result
     result=m.getResult(jobid, "pim")
-    print "pim:"
-    print result
+    #print "pim:"
+    #print result
+    pim_result = result
+    f = open('pim_result.txt', 'w')
+    f.write(pim_result)
+    f.close()
+
     result=m.getResult(jobid, "out")
-    print "out:"
-    print result
+    #print "out:"
+    #print result
 
     return sequencelist
+
+def pim_evaluation(schwellenwert):
+    '''
+    Auswertung der Percent Identity Matrix
+    :param schwellenwert: der Schwellenwert fuer die Erkennung von Matches
+    :return: Liste mit aehnlichen Sequenzen (als Seq Object gespeichert), die jeweils in eine Liste gepackt sind
+    '''
+
+    identifier_list = []
+    matches = []
+
+    f = open('pim_result.txt', 'r')
+    for i in range(6):
+        f.readline()
+    lines = 1
+    while True:
+        line = f.readline()
+        if line == '':
+            break
+        words = line.split()
+        words.pop(0) # deleting 1: etc
+        name = words[0] # getting 'identifierXY'
+        identifier_list.append(name)
+        words.pop(0) # deleting 'identifierXY'
+        if len(words) >= 1:
+            index = 1
+            for value in words:
+                value = float(value)
+                if index < lines:
+                    if value > schwellenwert:
+                        matches.append([name, index])
+                        #print name, secondname
+                else:
+                    break
+                index += 1
+        lines += 1
+
+    # get the correct index from the full identifier list
+    # and set the name of the corresponding identifier
+    names = []
+    new_matches = []
+    for match in matches:
+        match[1] = identifier_list[match[1]-1]
+
+        if match[1] in names:
+            new_matches.append(match[0])
+        else:
+            names.append(match[1])
+
+        print match # print the identifier names
+        # if not match[0] in names:
+        #     names.append(match[0])
+        # if not match[1] in names:
+        #     names.append(match[1])
+
+    # TODO: get the multiple sequences that are similar
+    # multiple_similar_sequences = []
+    # for new_match in new_matches:
+    #     multiple_similar_sequences.append(new_match)
+    #     for match in matches:
+    #         if new_match in match:
+    #             for entry in match:
+    #                 if not entry in multiple_similar_sequences:
+    #                     multiple_similar_sequences.append(entry)
+    #
+    # print 'Multiple similar sequences: ' + str(multiple_similar_sequences)
+
+    # TODO: get the unnessecary entries out
+    # for match in matches:
+    #     print match
+    #     if match[0] in final_list:
+    #         matches.remove(str(match))
+    #     if match[1] in final_list:
+    #         matches.remove(str(match))
+
+    #matches.append(multiple_similar_sequences)
+
+    print 'Matches: ' + str(matches)
+    # get the sequence from the identifier name
+    handle = open('sequence_result.fasta', 'r')
+    for record in SeqIO.parse(handle, 'fasta', IUPAC.unambiguous_dna):
+        for match in matches:
+            for i in range(len(match)):
+                if record.id == match[i]:
+                    match[i] = record.seq
+
+            #print match
+
+    handle.close()
+    return matches
+
 
 def createPSSM(sequencelist):
     print "Start PSSM"
@@ -152,7 +251,6 @@ def reduce_to_single_sequences(generated_object, feature):
         counter = 1
         foundMatch = False
         for result in results:
-            # TODO: switch statement for feature type
             matchCounter = 0
             for key in featureTypes[feature]:
                 if str(resultObject.sequence) == str(result.sequence) and resultObject.annotation.get(key)==result.annotation.get(key):
@@ -184,8 +282,11 @@ complete_list = jeremyFeatures + dominiks_list + kevins_list + alessandros_list
 
 save_file_object = open("list_of_identical_objects.txt", "w")
 
-for feature in dominiks_list:
-    print feature
+# Schwellenwert fuer nahezu identische Sequenzen bei der percent identitiy matrix
+schwellenwert = 90.0
+
+for feature in jeremyFeatures:
+    print 'Feature: ' + feature
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
     list_generator = generateList(feature, filePath)
@@ -203,12 +304,15 @@ for feature in dominiks_list:
         summe += object.getOccurences()
         #Blast typical sequence
         save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
-    print len(list_of_identical_objects)
+    print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
+    print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    sequencelist = clustering(list_of_identical_objects)
-    # TODO: PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
+    muscle_result = clustering(list_of_identical_objects)
+    # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
+    list_of_near_identical_sequences = pim_evaluation(schwellenwert)
+    for sequences in list_of_near_identical_sequences:
+        print sequences
     # TODO: neues MUSCLE
     # TODO: PSSM
     #createPSSM(sequencelist)
-    print summe
 save_file_object.close()
