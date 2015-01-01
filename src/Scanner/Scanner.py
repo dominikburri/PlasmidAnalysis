@@ -221,6 +221,31 @@ def createPSSM(sequencelist):
     print "PSSM done"
     return pssm
 
+def one_two_muscle(single_sequence_list):
+    terminator ={
+        'T0': 'note', 'T1': 'note', 'T2': 'note',
+        'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
+    }
+    CDS = {
+        'hypothetical protein': 'product', 'bla': 'gene', 'ampR': 'gene',
+        'kanamycin resistance protein': 'product', 'Amp': 'product', 'tetR': 'product',
+        'cat': 'gene', 'green fluorescent protein': 'product', 'neo': 'gene'
+    }
+
+
+
+    save_list = []
+    for resultObject in single_sequence_list:
+        for resultKey, resultValue in terminator:
+            for annotationKey, annotationValue in resultObject.annotation:
+                if resultKey == annotationValue and resultValue== annotationKey:
+                    save_list.append(resultObject)
+
+        #TODO Muscle dat list here and save results!
+
+
+
+
 def reduce_to_single_sequences(generated_object, feature):
     # TODO: implement in 'generateList'
     """
@@ -254,7 +279,6 @@ def reduce_to_single_sequences(generated_object, feature):
             matchCounter = 0
             for key in featureTypes[feature]:
                 if str(resultObject.sequence) == str(result.sequence) and resultObject.annotation.get(key)==result.annotation.get(key):
-                    #print str(resultObject.annotation.get(key))
                     matchCounter += 1
             if matchCounter == len(featureTypes[feature]):
                 result.setOccurences()
