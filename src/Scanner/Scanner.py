@@ -140,7 +140,8 @@ def pim_evaluation(schwellenwert):
         match[1] = identifier_list[match[1]-1]
 
         if match[1] in names:
-            new_matches.append(match[0])
+            if not match[0] in new_matches:
+                new_matches.append(match[0])
         else:
             names.append(match[1])
 
@@ -151,26 +152,26 @@ def pim_evaluation(schwellenwert):
         #     names.append(match[1])
 
     # TODO: get the multiple sequences that are similar
-    # multiple_similar_sequences = []
-    # for new_match in new_matches:
-    #     multiple_similar_sequences.append(new_match)
-    #     for match in matches:
-    #         if new_match in match:
-    #             for entry in match:
-    #                 if not entry in multiple_similar_sequences:
-    #                     multiple_similar_sequences.append(entry)
+    multiple_similar_sequences = []
+    for new_match in new_matches:
+        multiple_similar_sequences.append(new_match)
+        for match in matches:
+            if new_match in match:
+                for entry in match:
+                    if not entry in multiple_similar_sequences:
+                        multiple_similar_sequences.append(entry)
     #
     # print 'Multiple similar sequences: ' + str(multiple_similar_sequences)
 
     # TODO: get the unnessecary entries out
     # for match in matches:
     #     print match
-    #     if match[0] in final_list:
+    #     if match[0] in multiple_similar_sequences:
     #         matches.remove(str(match))
-    #     if match[1] in final_list:
+    #     if match[1] in multiple_similar_sequences:
     #         matches.remove(str(match))
 
-    #matches.append(multiple_similar_sequences)
+    matches.append(multiple_similar_sequences)
 
     print 'Matches: ' + str(matches)
     # get the sequence from the identifier name
