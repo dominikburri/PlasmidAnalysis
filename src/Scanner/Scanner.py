@@ -66,41 +66,26 @@ def clustering(objects_of_sequences):
         print "Status: ", m.getStatus(jobid)
 
     result=m.getResult(jobid, "sequence")
-    #print "sequence:"
-    #print result
     sequencelist = result
     f = open('sequence_result.fasta', 'w')
     f.write(sequencelist)
     f.close()
 
-    result=m.getResult(jobid, "aln-fasta")
-    #print "aln-fasta:"
-
-    #print result
-    #print "Resulttypes: ", m.getResultTypes(jobid)
-
-    result=m.getResult(jobid, "phylotree")
-    #print "phylotree:"
-    #print result
     result=m.getResult(jobid, "pim")
-    #print "pim:"
-    #print result
     pim_result = result
     f = open('pim_result.txt', 'w')
     f.write(pim_result)
     f.close()
-
-    result=m.getResult(jobid, "out")
-    #print "out:"
-    #print result
 
     return sequencelist
 
 def pim_evaluation(schwellenwert):
     '''
     Auswertung der Percent Identity Matrix
+    Nimmt die bestehenden Files zur Berechnung: pim_result.txt und sequence_result.fasta
     :param schwellenwert: der Schwellenwert fuer die Erkennung von Matches
-    :return: Liste mit aehnlichen Sequenzen (als Seq Object gespeichert), die jeweils in eine Liste gepackt sind
+    :return: Liste mit aehnlichen Sequenzen (als Seq Object gespeichert),
+    die jeweils in eine Liste gepackt sind
     '''
 
     identifier_list = []
@@ -223,6 +208,8 @@ def createPSSM(sequencelist):
     return pssm
 
 def one_two_muscle(single_sequence_list):
+    # TODO: make it work
+
     terminator ={
         'T0': 'note', 'T1': 'note', 'T2': 'note',
         'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
@@ -243,16 +230,15 @@ def one_two_muscle(single_sequence_list):
                     save_list.append(resultObject)
 
         #TODO Muscle dat list here and save results!
-
+    return save_list
 
 
 
 def reduce_to_single_sequences(generated_object, feature):
-    # TODO: implement in 'generateList'
     """
     same sequences + annotations -> count occurences and prepare new list
-    :param generated_object:
-    :return:
+    :param generated_object: list generator
+    :return: list of identical objects
     """
 
     featureTypes = {
@@ -279,7 +265,8 @@ def reduce_to_single_sequences(generated_object, feature):
         for result in results:
             matchCounter = 0
             for key in featureTypes[feature]:
-                if str(resultObject.sequence) == str(result.sequence) and resultObject.annotation.get(key)==result.annotation.get(key):
+                if str(resultObject.sequence) == str(result.sequence) \
+                        and resultObject.annotation.get(key)==result.annotation.get(key):
                     matchCounter += 1
             if matchCounter == len(featureTypes[feature]):
                 result.setOccurences()
@@ -310,17 +297,11 @@ save_file_object = open("list_of_identical_objects.txt", "w")
 # Schwellenwert fuer nahezu identische Sequenzen bei der percent identitiy matrix
 schwellenwert = 90.0
 
-for feature in jeremyFeatures:
+for feature in kevins_list:
     print 'Feature: ' + feature
-    filePath = "../../files/vectors.gb"
+    filePath = "../../files/vectors-100.gb"
     # make a list generator with the desired feature and its annotation
     list_generator = generateList(feature, filePath)
-
-    # for eintrag in list_generator:
-    #     for key in featureTypes[feature]:
-    #
-    #         print eintrag.annotation.get(key)
-
 
     #  same sequences + annotations -> count occurences and prepare new list
     list_of_identical_objects = reduce_to_single_sequences(list_generator, feature)
@@ -332,7 +313,9 @@ for feature in jeremyFeatures:
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    muscle_result = clustering(list_of_identical_objects)
+    #prepared_list = one_two_muscle(list_of_identical_objects)
+    prepared_list = list_of_identical_objects
+    muscle_result = clustering(prepared_list)
     # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
     list_of_near_identical_sequences = pim_evaluation(schwellenwert)
     for sequences in list_of_near_identical_sequences:
