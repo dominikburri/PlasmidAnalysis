@@ -18,3 +18,4 @@ Aufgabenverteilung:
             'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE übergeben
     Jeremy  Darstellung der Resultate
     Dominik PIM Auswertung: Rückgabe: Liste von "fast identische Sequenzen"
+            zusätzliche Liste mit mehreren 'verbundenen' Sequenzen
