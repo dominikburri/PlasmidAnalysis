@@ -132,6 +132,50 @@ def one_two_muscle(single_sequence_list):
         'kanamycin resistance protein': 'product', 'Amp': 'product', 'tetR': 'product',
         'cat': 'gene', 'green fluorescent protein': 'product', 'neo': 'gene'
     }
+    protein_bind ={
+        'lacO':'bound_moiety', 'lac repressor protein':'bound_moiety', 'loxP site cassette':'note',
+        'lac operator':'note'
+    }
+    misc_binding = {
+        'echinomycin':'bound_moiety','Escherichia coli IHF':'bound_moiety'
+    }
+    misc_recomb = {
+        'AttR2':'note', 'AttR1':'note', 'FRT':'note', 'attB1':'note','attB2':'note', 'loxM3':'note',
+        'loxP':'note'
+    }
+    LTR = {}
+    misc_signal = {
+        'enterokinase recognition sequence':'note'
+    }
+    enhancer = {
+        'tranlational enhancer':'note'
+    }
+    mobile_element = {}
+    sig_peptide = {}
+    oriT = {
+        'ori':'note'
+    }
+    polyA_signal = {
+        'HSV':'note', 'SV40':'note'
+    }
+    rep_origin = {
+        'ColE1':'note', 'F1':'note', 'R6K':'note', 'SV40':'note', 'colE1':'note', 'f1 ori':'note',
+        'oriV':'note', 'pBM1(ColE1)':'note', 'pBR322':'note', 'pMB1':'note', 'pSa ORI':'note', 'pUC':'note', 'pVS1':'note'
+    }
+    primer_bind = {
+        'F24':'note', 'M13':'note', 'R24':'note', 'VF2':'note', 'VR reverse':'note'
+    }
+    rRNA = {}
+    mRNA = {}
+    tRNA = {}
+    promoter = {
+        'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV':'gene', 'CaMV 35S':'gene',
+        'Plac':'gene', 'SP6':'gene', 'SV40':'gene','T3':'gene','T7':'gene'
+    }
+    RBS = {}
+    #-10_signal = {}
+    #-35_signal = {}
+
 
 
 
