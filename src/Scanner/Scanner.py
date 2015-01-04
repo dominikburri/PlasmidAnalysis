@@ -3,7 +3,7 @@ from bioservices import *
 from Bio import motifs
 from Bio.Alphabet import IUPAC, Gapped
 from Bio.Blast import NCBIWWW
-
+import pprint
 
 class ResultObject:
     """
@@ -41,7 +41,7 @@ def generateList(feature_type, filePath):
                     result = ResultObject(sequence_of_feature, feature_type, importantAnnotation)
                     yield result
 
-def clustering(objects_of_sequences):
+def clustering(list_of_sequences):
     """
     MUSCLE
     Compare the sequences to similarity. same sequences with similar annotations shall be clustered
@@ -49,14 +49,12 @@ def clustering(objects_of_sequences):
     :return:
     """
     print 'MUSCLE'
-    list_of_sequences = ""
 
-    if len(objects_of_sequences)<=1:
+
+    if len(list_of_sequences)<=1:
         return []
 
-    for (i,k) in enumerate(objects_of_sequences):
-        #print k
-        list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
+    print list_of_sequences
 
     #print list_of_sequences
     m = MUSCLE(verbose=False)
@@ -65,7 +63,7 @@ def clustering(objects_of_sequences):
     while m.getStatus(jobid) == u'RUNNING':
         print "Status: ", m.getStatus(jobid)
 
-    result=m.getResult(jobid, "sequence")
+    result = m.getResult(jobid, "sequence")
     sequencelist = result
     f = open('sequence_result.fasta', 'w')
     f.write(sequencelist)
@@ -205,6 +203,7 @@ def createPSSM(sequencelist):
     print "PWM done"
     pssm = pwm.log_odds()
     print "PSSM done"
+    print pssm
     return pssm
 
 def one_two_muscle(single_sequence_list):
@@ -270,7 +269,7 @@ def one_two_muscle(single_sequence_list):
     for resultObject in single_sequence_list:
         for resultKey, resultValue in terminator:
             for annotationKey, annotationValue in resultObject.annotation:
-                if resultKey == annotationValue and resultValue== annotationKey:
+                if resultKey == annotationValue and resultValue == annotationKey:
                     save_list.append(resultObject)
 
         #TODO Muscle dat list here and save results!
@@ -359,12 +358,33 @@ for feature in kevins_list:
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
     #prepared_list = one_two_muscle(list_of_identical_objects)
     prepared_list = list_of_identical_objects
-    muscle_result = clustering(prepared_list)
+
+    list_of_sequences = ""
+    for (i, k) in enumerate(prepared_list):
+        #print k
+        list_of_sequences += ">" + "identifier" + str(i) + "\n"+str(k.sequence)+"\n\n"
+    muscle_result = clustering(list_of_sequences)
+
     # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
     list_of_near_identical_sequences = pim_evaluation(schwellenwert)
+    print "test"
+    prepared_list_for_second_muscle = []
     for sequences in list_of_near_identical_sequences:
-        print sequences
-    # TODO: neues MUSCLE
-    # TODO: PSSM
-    #createPSSM(sequencelist)
+        for i in sequences:
+            print len(i)
+            prepared_list_for_second_muscle.append(i)
+
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(prepared_list_for_second_muscle)
+
+    list_of_sequences = ""
+    for (i, k) in enumerate(prepared_list_for_second_muscle):
+        #print k
+        list_of_sequences += ">" + "identifier" + str(i) + "\n"+str(k)+"\n\n"
+
+    print "Starting second muscle"
+    muscle_near_identical_sequences = clustering(list_of_sequences)
+    #print muscle_near_identical_sequences
+    #createPSSM(muscle_near_identical_sequences)
+
 save_file_object.close()
