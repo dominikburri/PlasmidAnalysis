@@ -50,7 +50,6 @@ def clustering(list_of_sequences):
     :return:
     """
     print 'MUSCLE'
-    list_of_sequences = ""
 
 
     if len(list_of_sequences)<=1:
@@ -369,7 +368,7 @@ for feature in kevins_list:
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    #prepared_list = one_two_muscle(list_of_identical_objects)
+    prepared_list = one_two_muscle(list_of_identical_objects, feature)
     prepared_list = list_of_identical_objects
 
     list_of_sequences = ""
