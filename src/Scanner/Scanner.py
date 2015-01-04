@@ -209,8 +209,8 @@ def createPSSM():
     print pssm
     return pssm
 
-def one_two_muscle(single_sequence_list, feature):
-    # TODO: make it work
+def group_identical_annotations(single_sequence_list, feature):
+    print 'Identical annotations with different Sequences are grouped'
 
     featureTypes = {
     'terminator':{
@@ -284,7 +284,7 @@ def one_two_muscle(single_sequence_list, feature):
         save_list.append(tempList)
     print "*---*"
     print len(save_list)
-    print save_list
+    print 'save list: ' + str(save_list)
     return save_list
 
 
@@ -368,7 +368,7 @@ for feature in kevins_list:
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    prepared_list = one_two_muscle(list_of_identical_objects, feature)
+    prepared_list = group_identical_annotations(list_of_identical_objects, feature)
     #prepared_list = list_of_identical_objects
     # TODO for schlaufe
     for entry in prepared_list:
@@ -376,7 +376,7 @@ for feature in kevins_list:
         # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
         list_of_near_identical_sequences = pim_evaluation(schwellenwert)
         for sequences in list_of_near_identical_sequences:
-            print sequences
+            print 'Sequences for further inspection: ' + str(sequences)
             if len(sequences) > 1:
                 # TODO: neues MUSCLE
                 clustering(entry, 2)
