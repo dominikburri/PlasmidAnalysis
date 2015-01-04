@@ -271,7 +271,7 @@ def one_two_muscle(single_sequence_list, feature):
     print featureTypes[feature]
     counter = 0
     print feature
-    for resultKey, resultValue in featureTypes[feature]:
+    for resultKey, resultValue in featureTypes[feature].items():
         counter += 1
         tempSequenceList = single_sequence_list
         tempList = []
