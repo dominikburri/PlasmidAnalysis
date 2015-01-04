@@ -41,7 +41,7 @@ def generateList(feature_type, filePath):
                     result = ResultObject(sequence_of_feature, feature_type, importantAnnotation)
                     yield result
 
-def clustering(objects_of_sequences):
+def clustering(objects_of_sequences, durchgang):
     """
     MUSCLE
     Compare the sequences to similarity. same sequences with similar annotations shall be clustered
@@ -65,17 +65,24 @@ def clustering(objects_of_sequences):
     while m.getStatus(jobid) == u'RUNNING':
         print "Status: ", m.getStatus(jobid)
 
-    result=m.getResult(jobid, "sequence")
-    sequencelist = result
-    f = open('sequence_result.fasta', 'w')
-    f.write(sequencelist)
-    f.close()
-
-    result=m.getResult(jobid, "pim")
-    pim_result = result
-    f = open('pim_result.txt', 'w')
-    f.write(pim_result)
-    f.close()
+    if durchgang == 2:
+        result=m.getResult(jobid, "aln-fasta")
+        sequencelist = result
+        print "aln-fasta:"
+        f = open('fastatmp', 'w')
+        f.write(sequencelist)
+        f.close()
+    else:
+        result=m.getResult(jobid, "sequence")
+        sequencelist = result
+        f = open('sequence_result.fasta', 'w')
+        f.write(sequencelist)
+        f.close()
+        result=m.getResult(jobid, "pim")
+        pim_result = result
+        f = open('pim_result.txt', 'w')
+        f.write(pim_result)
+        f.close()
 
     return sequencelist
 
@@ -173,17 +180,10 @@ def pim_evaluation(schwellenwert):
     return matches
 
 
-def createPSSM(sequencelist):
+def createPSSM():
     print "Start PSSM"
 
-    if len(sequencelist)==0:
-        return
-
     #sequencelist = sequencelist.replace("-", ".")
-    f = open('fastatmp', 'w')
-    f.write(sequencelist)
-    f.close()
-
     list = []
 
     for seq_record in SeqIO.parse("fastatmp", "fasta", IUPAC.unambiguous_dna):
@@ -368,12 +368,17 @@ for feature in kevins_list:
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
     prepared_list = one_two_muscle(list_of_identical_objects, feature)
     #prepared_list = list_of_identical_objects
-    #muscle_result = clustering(prepared_list)
-    # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
-    list_of_near_identical_sequences = pim_evaluation(schwellenwert)
-    for sequences in list_of_near_identical_sequences:
-        print sequences
-    # TODO: neues MUSCLE
-    # TODO: PSSM
-    #createPSSM(sequencelist)
+    # TODO for schlaufe
+    for entry in prepared_list:
+        muscle_result = clustering(entry, 1)
+        # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
+        list_of_near_identical_sequences = pim_evaluation(schwellenwert)
+        for sequences in list_of_near_identical_sequences:
+            print sequences
+            if len(sequences) > 1:
+                # TODO: neues MUSCLE
+                clustering(entry, 2)
+                # TODO: PSSM
+                createPSSM()
+
 save_file_object.close()

@@ -4,5 +4,6 @@
 #
 #
 
-     1: identifier0  100.00   50.53
-     2: identifier1   50.53  100.00
+     1: identifier1  100.00  100.00  100.00
+     2: identifier0  100.00  100.00  100.00
+     3: identifier2  100.00  100.00  100.00
