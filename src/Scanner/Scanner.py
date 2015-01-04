@@ -250,7 +250,7 @@ def one_two_muscle(single_sequence_list):
         'oriV':'note', 'pBM1(ColE1)':'note', 'pBR322':'note', 'pMB1':'note', 'pSa ORI':'note', 'pUC':'note', 'pVS1':'note'
     }
     primer_bind = {
-        'F24':'note', 'M13':'note', 'R24':'note', 'VF2':'note', 'VR reverse':'note'
+        'F24':'note', 'M13': 'note', 'R24': 'note', 'VF2': 'note', 'VR reverse': 'note'
     }
     rRNA = {}
     mRNA = {}
@@ -264,16 +264,24 @@ def one_two_muscle(single_sequence_list):
     #-35_signal = {}
 
 
-
+# and resultValue == annotationKey
 
     save_list = []
+    counter = 0
     for resultObject in single_sequence_list:
-        for resultKey, resultValue in terminator:
-            for annotationKey, annotationValue in resultObject.annotation:
-                if resultKey == annotationValue and resultValue== annotationKey:
-                    save_list.append(resultObject)
+        tempList = []
+        counter += 1
+        for resultKey, resultValue in terminator.items():
+            for annotationKey, annotationValue in resultObject.annotation.items():
+                if resultKey == annotationValue[0]:
+                    tempList.append(resultObject)
+        save_list.append(tempList)
 
-        #TODO Muscle dat list here and save results!
+       #TODO Muscle dat list here and save results!
+    print "-----------------------------------"
+    print counter
+    for eintrag in save_list:
+        print eintrag
     return save_list
 
 
@@ -357,9 +365,9 @@ for feature in kevins_list:
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    #prepared_list = one_two_muscle(list_of_identical_objects)
-    prepared_list = list_of_identical_objects
-    muscle_result = clustering(prepared_list)
+    prepared_list = one_two_muscle(list_of_identical_objects)
+    #prepared_list = list_of_identical_objects
+    #muscle_result = clustering(prepared_list)
     # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
     list_of_near_identical_sequences = pim_evaluation(schwellenwert)
     for sequences in list_of_near_identical_sequences:
