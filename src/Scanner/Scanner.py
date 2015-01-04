@@ -268,20 +268,21 @@ def one_two_muscle(single_sequence_list):
 
     save_list = []
     counter = 0
-    for resultObject in single_sequence_list:
+    for resultKey, resultValue in terminator.items():
+        tempSequenceList = single_sequence_list
         tempList = []
-        counter += 1
-        for resultKey, resultValue in terminator.items():
+        for resultObject in tempSequenceList:
             for annotationKey, annotationValue in resultObject.annotation.items():
-                if resultKey == annotationValue[0]:
+                if resultKey == annotationValue[0] and resultValue == annotationKey:
                     tempList.append(resultObject)
-        save_list.append(tempList)
+        if len(tempList)>0:
+            save_list.append(tempList)
 
-       #TODO Muscle dat list here and save results!
     print "-----------------------------------"
-    print counter
     for eintrag in save_list:
-        print eintrag
+        for b in eintrag:
+            print b
+
     return save_list
 
 
@@ -351,7 +352,7 @@ schwellenwert = 90.0
 
 for feature in kevins_list:
     print 'Feature: ' + feature
-    filePath = "../../files/vectors-100.gb"
+    filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
     list_generator = generateList(feature, filePath)
 
