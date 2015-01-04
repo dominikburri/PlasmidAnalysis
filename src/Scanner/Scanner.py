@@ -49,15 +49,21 @@ def clustering(objects_of_sequences, durchgang):
     :param objects_of_sequences:
     :return:
     """
-    print 'MUSCLE'
     list_of_sequences = ""
 
     if len(objects_of_sequences)<=1:
         return []
 
-    for (i,k) in enumerate(objects_of_sequences):
-        #print k
-        list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
+    if durchgang == 2:
+        print 'MUSCLE 2. Durchgang'
+        for (i,k) in enumerate(objects_of_sequences):
+            #print k
+            list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k)+"\n\n"
+    else:
+        print 'MUSCLE 1. Durchgang'
+        for (i,k) in enumerate(objects_of_sequences):
+            #print k
+            list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
 
     #print list_of_sequences
     m = MUSCLE(verbose=False)
@@ -69,21 +75,24 @@ def clustering(objects_of_sequences, durchgang):
     if durchgang == 2:
         result=m.getResult(jobid, "aln-fasta")
         sequencelist = result
-        print "aln-fasta:"
         f = open('fastatmp', 'w')
         f.write(sequencelist)
         f.close()
     else:
+        resultFile = open('results.txt', 'a')
         result=m.getResult(jobid, "sequence")
         sequencelist = result
         f = open('sequence_result.fasta', 'w')
         f.write(sequencelist)
+        resultFile.write(sequencelist)
         f.close()
         result=m.getResult(jobid, "pim")
         pim_result = result
         f = open('pim_result.txt', 'w')
         f.write(pim_result)
+        resultFile.write(pim_result)
         f.close()
+        resultFile.close()
 
     return sequencelist
 
@@ -367,20 +376,18 @@ for feature in kevins_list:
         save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
-    # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
+    # 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
     prepared_list = group_identical_annotations(list_of_identical_objects, feature)
     #prepared_list = list_of_identical_objects
-    # TODO for schlaufe
     for entry in prepared_list:
+        print str(entry)
         muscle_result = clustering(entry, 1)
         # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
         list_of_near_identical_sequences = pim_evaluation(schwellenwert)
         for sequences in list_of_near_identical_sequences:
             print 'Sequences for further inspection: ' + str(sequences)
             if len(sequences) > 1:
-                # TODO: neues MUSCLE
-                clustering(entry, 2)
-                # TODO: PSSM
+                clustering(sequences, 2)
                 createPSSM()
 
 save_file_object.close()
