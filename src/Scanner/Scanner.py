@@ -3,6 +3,7 @@ from bioservices import *
 from Bio import motifs
 from Bio.Alphabet import IUPAC, Gapped
 from Bio.Blast import NCBIWWW
+import pprint
 
 
 class ResultObject:
@@ -205,6 +206,7 @@ def createPSSM():
     print "PWM done"
     pssm = pwm.log_odds()
     print "PSSM done"
+    print pssm
     return pssm
 
 def one_two_muscle(single_sequence_list, feature):
