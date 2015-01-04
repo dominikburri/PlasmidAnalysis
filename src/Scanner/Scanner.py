@@ -207,82 +207,82 @@ def createPSSM(sequencelist):
     print "PSSM done"
     return pssm
 
-def one_two_muscle(single_sequence_list):
+def one_two_muscle(single_sequence_list, feature):
     # TODO: make it work
 
-    terminator ={
+    featureTypes = {
+    'terminator':{
         'T0': 'note', 'T1': 'note', 'T2': 'note',
         'T7': 'note', 'rrnB': 'note', 'tNOS': 'note'
-    }
-    CDS = {
+    },
+    'CDS': {
         'hypothetical protein': 'product', 'bla': 'gene', 'ampR': 'gene',
         'kanamycin resistance protein': 'product', 'Amp': 'product', 'tetR': 'product',
         'cat': 'gene', 'green fluorescent protein': 'product', 'neo': 'gene'
-    }
-    protein_bind ={
+    },
+    'protein_bind' :{
         'lacO':'bound_moiety', 'lac repressor protein':'bound_moiety', 'loxP site cassette':'note',
         'lac operator':'note'
-    }
-    misc_binding = {
+    },
+    'misc_binding' : {
         'echinomycin':'bound_moiety','Escherichia coli IHF':'bound_moiety'
-    }
-    misc_recomb = {
+    },
+    'misc_recomb' : {
         'AttR2':'note', 'AttR1':'note', 'FRT':'note', 'attB1':'note','attB2':'note', 'loxM3':'note',
         'loxP':'note'
-    }
-    LTR = {}
-    misc_signal = {
+    },
+    'LTR' : {},
+    'misc_signal' : {
         'enterokinase recognition sequence':'note'
-    }
-    enhancer = {
+    },
+    'enhancer' : {
         'tranlational enhancer':'note'
-    }
-    mobile_element = {}
-    sig_peptide = {}
-    oriT = {
+    },
+    'mobile_element' : {},
+    'sig_peptide' : {},
+    'oriT' : {
         'ori':'note'
-    }
-    polyA_signal = {
+    },
+    'polyA_signal' : {
         'HSV':'note', 'SV40':'note'
-    }
-    rep_origin = {
+    },
+    'rep_origin' : {
         'ColE1':'note', 'F1':'note', 'R6K':'note', 'SV40':'note', 'colE1':'note', 'f1 ori':'note',
         'oriV':'note', 'pBM1(ColE1)':'note', 'pBR322':'note', 'pMB1':'note', 'pSa ORI':'note', 'pUC':'note', 'pVS1':'note'
-    }
-    primer_bind = {
+    },
+    'primer_bind' : {
         'F24':'note', 'M13': 'note', 'R24': 'note', 'VF2': 'note', 'VR reverse': 'note'
-    }
-    rRNA = {}
-    mRNA = {}
-    tRNA = {}
-    promoter = {
+    },
+    'rRNA' : {},
+    'mRNA' : {},
+    'tRNA' : {},
+    'promoter' : {
         'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV':'gene', 'CaMV 35S':'gene',
         'Plac':'gene', 'SP6':'gene', 'SV40':'gene','T3':'gene','T7':'gene'
-    }
-    RBS = {}
+    },
+    'RBS' : {}
     #-10_signal = {}
     #-35_signal = {}
-
+    }
 
 # and resultValue == annotationKey
 
     save_list = []
+    print featureTypes[feature]
     counter = 0
-    for resultKey, resultValue in terminator.items():
+    print feature
+    for resultKey, resultValue in featureTypes[feature]:
+        counter += 1
         tempSequenceList = single_sequence_list
         tempList = []
         for resultObject in tempSequenceList:
             for annotationKey, annotationValue in resultObject.annotation.items():
                 if resultKey == annotationValue[0] and resultValue == annotationKey:
                     tempList.append(resultObject)
-        if len(tempList)>0:
-            save_list.append(tempList)
-
-    print "-----------------------------------"
-    for eintrag in save_list:
-        for b in eintrag:
-            print b
-
+        save_list.append(tempList)
+    print "*---*"
+    print len(save_list)
+    print save_list
     return save_list
 
 
@@ -366,7 +366,7 @@ for feature in kevins_list:
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
     # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
-    prepared_list = one_two_muscle(list_of_identical_objects)
+    prepared_list = one_two_muscle(list_of_identical_objects, feature)
     #prepared_list = list_of_identical_objects
     #muscle_result = clustering(prepared_list)
     # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
