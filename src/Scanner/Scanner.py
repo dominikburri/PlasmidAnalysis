@@ -360,8 +360,13 @@ save_file_object = open("list_of_identical_objects.txt", "w")
 
 # Schwellenwert fuer nahezu identische Sequenzen bei der percent identitiy matrix
 schwellenwert = 90.0
-
-for feature in dominiks_list:
+f = open('pssm_results.txt', 'w')
+f.write('')
+f.close()
+resultFile = open('results.txt', 'w')
+resultFile.write('')
+resultFile.close()
+for feature in kevins_list:
     print 'Feature: ' + feature
     filePath = "../../files/vectors.gb"
     # make a list generator with the desired feature and its annotation
