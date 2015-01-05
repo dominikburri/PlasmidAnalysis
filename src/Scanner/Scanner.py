@@ -252,24 +252,24 @@ def group_identical_annotations(single_sequence_list, feature):
     'mobile_element' : {},
     'sig_peptide' : {},
     'oriT' : {
-        'ori':'note'
+        'oriT':'note','origin of transfer':'note','IncP origin of transfer':'note'
     },
     'polyA_signal' : {
-        'HSV':'note', 'SV40':'note'
+        'HSV':'note', 'SV40':'note','SV40 late polyadenylation signal':'note'
     },
     'rep_origin' : {
-        'ColE1':'note', 'F1':'note', 'R6K':'note', 'SV40':'note', 'colE1':'note', 'f1 ori':'note',
-        'oriV':'note', 'pBM1(ColE1)':'note', 'pBR322':'note', 'pMB1':'note', 'pSa ORI':'note', 'pUC':'note', 'pVS1':'note'
+        'ColE1':'note', 'F1 Ori':'note', 'R6K':'note', 'SV40 origin of replication':'note', 'colE1':'note', 'f1':'note',
+        'oriV':'note', 'pBM1(ColE1)':'note', 'ColE1 pBR322':'note', 'ColE1-derived plasmid replication origin':'note', 'pUC':'note'
     },
     'primer_bind' : {
-        'F24':'note', 'M13': 'note', 'R24': 'note', 'VF2': 'note', 'VR reverse': 'note'
+        'F24':'note', 'T7': 'note', 'R24': 'note', 'VF2 forward sequencing primer annealing site (BBa_G00100)': 'note'
     },
     'rRNA' : {},
     'mRNA' : {},
     'tRNA' : {},
     'promoter' : {
-        'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV':'gene', 'CaMV 35S':'gene',
-        'Plac':'gene', 'SP6':'gene', 'SV40':'gene','T3':'gene','T7':'gene'
+        'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV promoter':'gene', 'CaMV 35S promoter':'gene',
+        'Plac':'gene', 'SP6 promoter':'gene', 'T3 promoter':'gene','T7 promoter':'gene'
     },
     'RBS' : {}
     #-10_signal = {}
