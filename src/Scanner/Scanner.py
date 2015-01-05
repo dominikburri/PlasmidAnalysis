@@ -49,15 +49,21 @@ def clustering(objects_of_sequences, durchgang):
     :param objects_of_sequences:
     :return:
     """
-    print 'MUSCLE'
     list_of_sequences = ""
 
     if len(objects_of_sequences)<=1:
         return []
 
-    for (i,k) in enumerate(objects_of_sequences):
-        #print k
-        list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
+    if durchgang == 2:
+        print 'MUSCLE 2. Durchgang'
+        for (i,k) in enumerate(objects_of_sequences):
+            #print k
+            list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k)+"\n\n"
+    else:
+        print 'MUSCLE 1. Durchgang'
+        for (i,k) in enumerate(objects_of_sequences):
+            #print k
+            list_of_sequences += ">" + "identifier" + str(i) +"\n"+str(k.sequence)+"\n\n"
 
     #print list_of_sequences
     m = MUSCLE(verbose=False)
@@ -69,21 +75,24 @@ def clustering(objects_of_sequences, durchgang):
     if durchgang == 2:
         result=m.getResult(jobid, "aln-fasta")
         sequencelist = result
-        print "aln-fasta:"
         f = open('fastatmp', 'w')
         f.write(sequencelist)
         f.close()
     else:
+        resultFile = open('results.txt', 'a')
         result=m.getResult(jobid, "sequence")
         sequencelist = result
         f = open('sequence_result.fasta', 'w')
         f.write(sequencelist)
+        resultFile.write(sequencelist)
         f.close()
         result=m.getResult(jobid, "pim")
         pim_result = result
         f = open('pim_result.txt', 'w')
         f.write(pim_result)
+        resultFile.write(pim_result)
         f.close()
+        resultFile.close()
 
     return sequencelist
 
@@ -243,24 +252,24 @@ def group_identical_annotations(single_sequence_list, feature):
     'mobile_element' : {},
     'sig_peptide' : {},
     'oriT' : {
-        'ori':'note'
+        'oriT':'note','origin of transfer':'note','IncP origin of transfer':'note'
     },
     'polyA_signal' : {
-        'HSV':'note', 'SV40':'note'
+        'HSV':'note', 'SV40':'note','SV40 late polyadenylation signal':'note'
     },
     'rep_origin' : {
-        'ColE1':'note', 'F1':'note', 'R6K':'note', 'SV40':'note', 'colE1':'note', 'f1 ori':'note',
-        'oriV':'note', 'pBM1(ColE1)':'note', 'pBR322':'note', 'pMB1':'note', 'pSa ORI':'note', 'pUC':'note', 'pVS1':'note'
+        'ColE1':'note', 'F1 Ori':'note', 'R6K':'note', 'SV40 origin of replication':'note', 'colE1':'note', 'f1':'note',
+        'oriV':'note', 'pBM1(ColE1)':'note', 'ColE1 pBR322':'note', 'ColE1-derived plasmid replication origin':'note', 'pUC':'note'
     },
     'primer_bind' : {
-        'F24':'note', 'M13': 'note', 'R24': 'note', 'VF2': 'note', 'VR reverse': 'note'
+        'F24':'note', 'T7': 'note', 'R24': 'note', 'VF2 forward sequencing primer annealing site (BBa_G00100)': 'note'
     },
     'rRNA' : {},
     'mRNA' : {},
     'tRNA' : {},
     'promoter' : {
-        'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV':'gene', 'CaMV 35S':'gene',
-        'Plac':'gene', 'SP6':'gene', 'SV40':'gene','T3':'gene','T7':'gene'
+        'actin 15':'gene', 'bla':'gene', 'ADH1 promoter':'gene', 'CMV promoter':'gene', 'CaMV 35S promoter':'gene',
+        'Plac':'gene', 'SP6 promoter':'gene', 'T3 promoter':'gene','T7 promoter':'gene'
     },
     'RBS' : {}
     #-10_signal = {}
@@ -367,20 +376,18 @@ for feature in kevins_list:
         save_file_object.write(str(object) + "\t" + str(object.getOccurences()) + "\n")
     print("Anzahl identischer objekte: \t" + str(len(list_of_identical_objects)))
     print("Summe aller Objekte: \t\t\t" + str(summe))
-    # TODO: 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
+    # 'wichtige Annotation' Sequenzen in Liste speichern und MUSCLE uebergeben
     prepared_list = group_identical_annotations(list_of_identical_objects, feature)
     #prepared_list = list_of_identical_objects
-    # TODO for schlaufe
     for entry in prepared_list:
+        print str(entry)
         muscle_result = clustering(entry, 1)
         # PIM Auswertung: Sequenzen groesser Schwellenwert (bsp. 95%) rausspeichern. Rueckgabe: Liste von "fast identische Sequenzen"
         list_of_near_identical_sequences = pim_evaluation(schwellenwert)
         for sequences in list_of_near_identical_sequences:
             print 'Sequences for further inspection: ' + str(sequences)
             if len(sequences) > 1:
-                # TODO: neues MUSCLE
-                clustering(entry, 2)
-                # TODO: PSSM
+                clustering(sequences, 2)
                 createPSSM()
 
 save_file_object.close()
